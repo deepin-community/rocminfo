@@ -1,4 +1,13 @@
 #!/usr/bin/make -f
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 %:
-	dh $@
+	dh $@ -Scmake
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		-DROCM_DIR=/usr \
+		-DCMAKE_INSTALL_PREFIX=/usr
+
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp

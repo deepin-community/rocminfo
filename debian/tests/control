@@ -1,0 +1,3 @@
+Tests: rocminfo, enumerator
+Depends: @, sed
+Restrictions: superficial, skippable

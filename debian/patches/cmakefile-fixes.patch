@@ -1,0 +1,25 @@
+Description: Debian git tags differ from upstream, breaking this cmake mechanism
+Forwarded: not-needed
+---
+ CMakeLists.txt |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -78,12 +78,12 @@
+ set(PKG_VERSION_NUM_COMMIT 0)
+ 
+ ################# Determine the library version #########################
+-## Setup the package version based on git tags.
+-set(PKG_VERSION_GIT_TAG_PREFIX "rocminfo_pkg_ver")
++### Setup the package version based on git tags.
++#set(PKG_VERSION_GIT_TAG_PREFIX "rocminfo_pkg_ver")
+ 
+-find_program (GIT NAMES git)
++#find_program (GIT NAMES git)
+ 
+-get_package_version_number("1.0.0" ${PKG_VERSION_GIT_TAG_PREFIX} GIT)
++#get_package_version_number("1.0.0" ${PKG_VERSION_GIT_TAG_PREFIX} GIT)
+ # VERSION_* variables should be set by get_version_from_tag
+ message("Package version: ${PKG_VERSION_STR}")
+ 
