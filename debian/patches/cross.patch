@@ -1,0 +1,31 @@
+Description: rocminfo FTCBFS: confused architecture terminology
+ rocminfo fails to cross build from source, because it passes invalid
+ compiler flags. The detection is broken due to confusing architecture
+ terminologies. The system we are building on is called "build" in Debian
+ and GNU, but for cmake it is called "host". The system we are building
+ for is called "host" in Debian and GNU, but for cmake it is empty (it
+ doesn't have a name).
+Author: Helmut Grohne <helmut@subdivi.de>
+Bug: https://github.com/ROCm/rocminfo/issues/60
+Bug-Debian: https://bugs.debian.org/1024611
+Reviewed-by: Étienne Mollier <emollier@debian.org>
+Last-Update: 2022-11-22
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -137,12 +137,12 @@
+ set(ROCMINFO_CXX_FLAGS ${ROCMINFO_CXX_FLAGS} -fms-extensions)
+ set(ROCMINFO_CXX_FLAGS ${ROCMINFO_CXX_FLAGS} -Werror)
+ set(ROCMINFO_CXX_FLAGS ${ROCMINFO_CXX_FLAGS} -Wall)
+-set(ROCMINFO_CXX_FLAGS ${ROCMINFO_CXX_FLAGS} -m64)
++#set(ROCMINFO_CXX_FLAGS ${ROCMINFO_CXX_FLAGS} -m64)
+ 
+ #
+ # Extend the compiler flags for 64-bit builds
+ #
+-if((${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "x86_64") OR (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64"))
++if((${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64") OR (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "AMD64"))
+   set(ROCMINFO_CXX_FLAGS ${ROCMINFO_CXX_FLAGS} -msse -msse2)
+ endif()
+ 

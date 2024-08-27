@@ -1,0 +1,74 @@
+From 1c14fd02037ba59200954328e1af2da851b829dc Mon Sep 17 00:00:00 2001
+From: getianao <getianao@gmail.com>
+Date: Thu, 2 Jun 2022 12:29:44 +0800
+Subject: [PATCH] Fix invalid escape sequence deprecation in Python3
+
+Bug-Debian: https://bugs.debian.org/1065405
+Bug: https://github.com/ROCm/rocminfo/pull/55
+Forwarded: https://github.com/ROCm/rocminfo/pull/55
+Applied-Upstream: 6.1.0
+---
+ rocm_agent_enumerator | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/rocm_agent_enumerator
++++ b/rocm_agent_enumerator
+@@ -81,7 +81,7 @@
+     return func
+   return deco
+ 
+-@staticVars(search_term=re.compile("gfx[0-9a-fA-F]+"))
++@staticVars(search_term=re.compile(r"gfx[0-9a-fA-F]+"))
+ def getGCNISA(line, match_from_beginning = False):
+  if match_from_beginning is True:
+    result = getGCNISA.search_term.match(line)
+@@ -92,7 +92,7 @@
+    return result.group(0)
+  return None
+ 
+-@staticVars(search_name=re.compile("gfx[0-9a-fA-F]+(:[-+:\w]+)?"))
++@staticVars(search_name=re.compile(r"gfx[0-9a-fA-F]+(:[-+:\w]+)?"))
+ def getGCNArchName(line):
+  result = getGCNArchName.search_name.search(line)
+ 
+@@ -135,8 +135,8 @@
+         break
+       # run rocminfo
+       rocminfo_output = subprocess.Popen(rocminfo_executable, stdout=subprocess.PIPE).communicate()[0].decode("utf-8").split('\n')
+-      term1 = re.compile("Cannot allocate memory")
+-      term2 = re.compile("HSA_STATUS_ERROR_OUT_OF_RESOURCES")
++      term1 = re.compile(r"Cannot allocate memory")
++      term2 = re.compile(r"HSA_STATUS_ERROR_OUT_OF_RESOURCES")
+       done = 1
+       for line in rocminfo_output:
+         if term1.search(line) is not None or term2.search(line) is not None:
+@@ -149,9 +149,9 @@
+ 
+   # search AMDGCN gfx ISA
+   if search_arch_name is True:
+-    line_search_term = re.compile("\A\s+Name:\s+(amdgcn-amd-amdhsa--gfx\d+)")
++    line_search_term = re.compile(r"\A\s+Name:\s+(amdgcn-amd-amdhsa--gfx\d+)")
+   else:
+-    line_search_term = re.compile("\A\s+Name:\s+(gfx\d+)")
++    line_search_term = re.compile(r"\A\s+Name:\s+(gfx\d+)")
+   for line in rocminfo_output:
+     if line_search_term.match(line) is not None:
+       if search_arch_name is True:
+@@ -172,7 +172,7 @@
+   except:
+     lspci_output = []
+ 
+-  target_search_term = re.compile("1002:\w+")
++  target_search_term = re.compile(r"1002:\w+")
+   for line in lspci_output:
+     search_result = target_search_term.search(line)
+     if search_result is not None:
+@@ -196,7 +196,7 @@
+       if os.path.isdir(node_path):
+         prop_path = node_path + '/properties'
+         if os.path.isfile(prop_path) and os.access(prop_path, os.R_OK):
+-          target_search_term = re.compile("gfx_target_version.+")
++          target_search_term = re.compile(r"gfx_target_version.+")
+           with open(prop_path) as f:
+             try:
+               line = f.readline()

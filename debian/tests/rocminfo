@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+if [ -d /sys/class/kfd ]; then
+  echo 'Running rocminfo and expecting GPU information'
+  rocminfo
+else
+  echo 'Running rocminfo and expecting no GPU found'
+  rocminfo | sed '/ROCk module is NOT/,$b;$q1'
+fi

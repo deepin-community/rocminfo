@@ -1,0 +1,3 @@
+cmakefile-fixes.patch
+cross.patch
+fix-escape-sequence.patch
